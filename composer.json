@@ -2,7 +2,7 @@
   "name": "ephemeral/oauth2",
   "description": "Silex addons for the Ephemeral Project",
   "license": "proprietary",
-  "minimum-stability": "dev"
+  "minimum-stability": "dev",
   "authors": [
     {
       "name": "Bret Combast",
