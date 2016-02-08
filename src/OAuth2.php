@@ -72,4 +72,13 @@ class OAuth2 {
         return;
     }
 
+
+    public function verifyToken($token) {
+        $params = [ "access_token" => $token];
+        $request = $this->client->post('/oauth2/verify', array('exceptions' => false), $params);
+        $response = $this->sendOAuth($request);
+
+        return $response;
+    }
+
 }

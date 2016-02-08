@@ -6,11 +6,8 @@ use Ephemeral\OAuth2;
 use Silex\ServiceProviderInterface;
 use Silex\Application;
 
-
-
 class OAuth2ServiceProvider implements ServiceProviderInterface
 {
-
 
     public function register(Application $app)
     {
