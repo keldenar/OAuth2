@@ -80,4 +80,13 @@ class OAuth2 {
         return $response;
     }
 
+    public function checkAccess(\Symfony\Component\HttpFoundation\Request $request, \Silex\Application $app) {
+        $app['token'] = $request->get('access_token');
+        if ($app['token'] == null) {
+            $app->abort(401, "Unauthorized");
+        } else {
+            $tmp = $this->verifyToken($request->get("access_token"));
+            if ($tmp["authorized"] != true) $app->abort(401, "Unauthorized");
+        }
+    }
 }
