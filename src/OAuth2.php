@@ -27,6 +27,7 @@ class OAuth2 {
             if ($$key != '') $params[$key] = $$key;
         }
         $request = $this->client->post('/oauth2/accessToken', array('exceptions' => false), $params);
+        $request->setAuth($this->app['oauth2.client_id'], $this->app['oauth2.client_secret']);
         $response = $this->sendOAuth($request);
 
         return $response;
@@ -35,7 +36,6 @@ class OAuth2 {
     public function sendOAuth(RequestInterface $request)
     {
         try {
-            $request->setAuth($this->app['oauth2.client_id'], $this->app['oauth2.client_secret']);
             $response = $request->send();
         } catch (ClientErrorResponseException $e) {
             return ["Error" => "Error:" . $e->getMessage()];
@@ -77,7 +77,6 @@ class OAuth2 {
         $params = [ "access_token" => $token];
         $request = $this->client->post('/oauth2/verify', array('exceptions' => false), $params);
         $response = $this->sendOAuth($request);
-
         return $response;
     }
 
