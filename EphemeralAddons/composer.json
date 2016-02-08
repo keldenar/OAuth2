@@ -1,0 +1,28 @@
+{
+  "name": "ephemeral/EphemeralAddons",
+  "description": "Silex addons for the Ephemeral Project",
+  "minimum-stability": "stable",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "Bret Combast",
+      "email": "keldenar@gmail.com"
+    }
+  ],
+  "require": {
+    "php": ">=5.5.9",
+    "guzzle/guzzle": "v3.9.3",
+    "silex/silex": "v1.3.5"
+  },
+  "require-dev": {
+    "fzaninotto/faker": "~1.4",
+    "mockery/mockery": "0.9.*",
+    "phpunit/phpunit": "~4.0",
+    "symfony/var-dumper": "v3.0.1"
+  },
+  "autoload": {
+    "psr-4": {
+      "Ephemeral\\": "src/"
+    }
+  }
+}
