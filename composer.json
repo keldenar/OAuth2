@@ -1,7 +1,6 @@
 {
   "name": "ephemeral/oauth2",
   "description": "Silex addons for the Ephemeral Project",
-  "minimum-stability": "stable",
   "license": "proprietary",
   "authors": [
     {
