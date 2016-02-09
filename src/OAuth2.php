@@ -86,7 +86,21 @@ class OAuth2 {
             $app->abort(401, "Unauthorized");
         } else {
             $tmp = $this->verifyToken($request->get("access_token"));
-            if ($tmp["authorized"] != true) $app->abort(401, "Unauthorized");
+            if (array_key_exists("authorized", $tmp)) {
+                if ($tmp["authorized"] != true) {
+                    $app->abort(401, "Unauthorized");
+                }
+            } else {
+                $app->abort(401, "Unauthorized");
+            }
         }
+    }
+
+    public function getOAuthUser(\Symfony\Component\HttpFoundation\Request $request, \Silex\Application $app)
+    {
+        $params = [ "access_token" => $request->get('access_token')];
+        $request = $this->client->post('/oauth2/tokenUser', array('exceptions' => false), $params);
+        $response = $this->sendOAuth($request);
+        return $response;
     }
 }
