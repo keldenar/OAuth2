@@ -19,6 +19,14 @@ class OAuth2 {
         $this->client->setBaseUrl($this->app['oauth2.hostname']);
     }
 
+    public function token()
+    {
+        $token_info = $this->app['session']->get('token_info');
+        if (is_array($token_info) && array_key_exists('access_token', $token_info)) {
+            return $token_info['access_token'];
+        }
+        return null;
+    }
 
     public function getAccessToken($grant_type='client_credentials', $username='', $password='', $scope='', $response_type='', $refresh_token = '')
     {
