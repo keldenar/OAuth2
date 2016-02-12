@@ -19,8 +19,24 @@ class OAuth2 {
         $this->client->setBaseUrl($this->app['oauth2.hostname']);
     }
 
-    public function token()
+    //first check the header
+    //Then check for an access_token on the request
+    //Finally check the session
+    public function token($req = null)
     {
+        if (!is_null($req)) {
+            // We've been passed a request
+            $token_info = $req->headers->get('Authorization');
+            if (strpos($token_info, 'Bearer ') === 0) {
+                list(,$token_info) = explode(' ', $token_info);
+                return $token_info;
+            } else {
+                $token_info = $req->get('access_token');
+                if (!is_null($token_info)) {
+                    return $token_info;
+                }
+            }
+        }
         $token_info = $this->app['session']->get('token_info');
         if (is_array($token_info) && array_key_exists('access_token', $token_info)) {
             return $token_info['access_token'];
