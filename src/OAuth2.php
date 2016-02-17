@@ -12,6 +12,7 @@ class OAuth2 {
 
     protected $client;
     protected $app;
+    protected $token;
 
     public function __construct(Application $app) {
         $this->app = $app;
@@ -24,22 +25,28 @@ class OAuth2 {
     //Finally check the session
     public function token($req = null)
     {
+        $token_info = $this->app['session']->get('token_info');
+        if (is_array($token_info) && array_key_exists('access_token', $token_info)) {
+            return $token_info['access_token'];
+        }
+        if (! null == $this->token) {
+            return $this->token;
+        }
+
         if (!is_null($req)) {
             // We've been passed a request
             $token_info = $req->headers->get('Authorization');
             if (strpos($token_info, 'Bearer ') === 0) {
                 list(,$token_info) = explode(' ', $token_info);
+                $this->token = $token_info;
                 return $token_info;
             } else {
                 $token_info = $req->get('access_token');
                 if (!is_null($token_info)) {
+                    $this->token = $token_info;
                     return $token_info;
                 }
             }
-        }
-        $token_info = $this->app['session']->get('token_info');
-        if (is_array($token_info) && array_key_exists('access_token', $token_info)) {
-            return $token_info['access_token'];
         }
         return null;
     }
