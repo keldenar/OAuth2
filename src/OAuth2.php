@@ -116,7 +116,7 @@ class OAuth2 {
         if ($app['token'] == null) {
             $app->abort(401, "Unauthorized");
         } else {
-            $tmp = $this->verifyToken($request->get("access_token"));
+            $tmp = $this->verifyToken($app['token']);
             if (array_key_exists("authorized", $tmp)) {
                 if ($tmp["authorized"] != true) {
                     $app->abort(401, "Unauthorized");
