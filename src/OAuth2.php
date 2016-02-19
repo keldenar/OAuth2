@@ -129,8 +129,8 @@ class OAuth2 {
 
     public function getOAuthUser(\Symfony\Component\HttpFoundation\Request $request, \Silex\Application $app)
     {
-        $params = [ "access_token" => $this->token($request)];
-        $request = $this->client->get('/oauth2/tokenUser', array('exceptions' => false), $params);
+        $request = $this->client->get('/oauth2/tokenUser', array('exceptions' => false));
+        $request->addHeader('Authorization', 'Bearer ' . $this->token());
         $response = $this->sendOAuth($request);
         return $response;
     }
