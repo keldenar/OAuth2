@@ -7,22 +7,30 @@ use Guzzle\Http\Exception\ClientErrorResponseException;
 use Guzzle\Http\Message\RequestInterface;
 use Silex\Application;
 
-
-class OAuth2 {
+/**
+ * Class OAuth2
+ * @package Ephemeral
+ */
+class OAuth2
+{
 
     protected $client;
     protected $app;
     protected $token;
 
+    /**
+     * @param Application $app
+     */
     public function __construct(Application $app) {
         $this->app = $app;
         $this->client = new Client();
         $this->client->setBaseUrl($this->app['oauth2.hostname']);
     }
 
-    //first check the header
-    //Then check for an access_token on the request
-    //Finally check the session
+    /**
+     * @param null $req
+     * @return null
+     */
     public function token($req = null)
     {
         $token_info = $this->app['session']->get('token_info');
@@ -51,6 +59,15 @@ class OAuth2 {
         return null;
     }
 
+    /**
+     * @param string $grant_type
+     * @param string $username
+     * @param string $password
+     * @param string $scope
+     * @param string $response_type
+     * @param string $refresh_token
+     * @return array|mixed
+     */
     public function getAccessToken($grant_type='client_credentials', $username='', $password='', $scope='', $response_type='', $refresh_token = '')
     {
         $params = [];
@@ -64,6 +81,10 @@ class OAuth2 {
         return $response;
     }
 
+    /**
+     * @param RequestInterface $request
+     * @return array|mixed
+     */
     public function sendOAuth(RequestInterface $request)
     {
         try {
@@ -78,11 +99,16 @@ class OAuth2 {
         return $return;
     }
 
+    /**
+     * @return null
+     */
     public function checkOauthException() {
         return null;
     }
 
-
+    /**
+     *
+     */
     public function refreshToken() {
         $token_info = $this->app['session']->get("token_info");
         if (!is_array($token_info)) $token_info = [];
@@ -103,7 +129,10 @@ class OAuth2 {
         return;
     }
 
-
+    /**
+     * @param $token
+     * @return array|mixed
+     */
     public function verifyToken($token) {
         $params = [ "access_token" => $token];
         $request = $this->client->post('/oauth2/verify', array('exceptions' => false), $params);
@@ -111,6 +140,10 @@ class OAuth2 {
         return $response;
     }
 
+    /**
+     * @param \Symfony\Component\HttpFoundation\Request $request
+     * @param Application $app
+     */
     public function checkAccess(\Symfony\Component\HttpFoundation\Request $request, \Silex\Application $app) {
         $app['token'] = $this->token($request);
         if ($app['token'] == null) {
@@ -127,6 +160,11 @@ class OAuth2 {
         }
     }
 
+    /**
+     * @param \Symfony\Component\HttpFoundation\Request $request
+     * @param Application $app
+     * @return array|mixed
+     */
     public function getOAuthUser(\Symfony\Component\HttpFoundation\Request $request, \Silex\Application $app)
     {
         $request = $this->client->get('/oauth2/tokenUser', array('exceptions' => false));
@@ -134,4 +172,5 @@ class OAuth2 {
         $response = $this->sendOAuth($request);
         return $response;
     }
+
 }
