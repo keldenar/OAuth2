@@ -21,7 +21,8 @@ class OAuth2
     /**
      * @param Application $app
      */
-    public function __construct(Application $app) {
+    public function __construct(Application $app)
+    {
         $this->app = $app;
         $this->client = new Client();
         $this->client->setBaseUrl($this->app['oauth2.hostname']);
@@ -102,14 +103,16 @@ class OAuth2
     /**
      * @return null
      */
-    public function checkOauthException() {
+    public function checkOauthException()
+    {
         return null;
     }
 
     /**
      *
      */
-    public function refreshToken() {
+    public function refreshToken()
+    {
         $token_info = $this->app['session']->get("token_info");
         if (!is_array($token_info)) $token_info = [];
         if (array_key_exists("refresh_token", $token_info)) {
@@ -133,7 +136,8 @@ class OAuth2
      * @param $token
      * @return array|mixed
      */
-    public function verifyToken($token) {
+    public function verifyToken($token)
+    {
         $params = [ "access_token" => $token];
         $request = $this->client->post('/oauth2/verify', array('exceptions' => false), $params);
         $response = $this->sendOAuth($request);
@@ -144,7 +148,8 @@ class OAuth2
      * @param \Symfony\Component\HttpFoundation\Request $request
      * @param Application $app
      */
-    public function checkAccess(\Symfony\Component\HttpFoundation\Request $request, \Silex\Application $app) {
+    public function checkAccess(\Symfony\Component\HttpFoundation\Request $request, \Silex\Application $app)
+    {
         $app['token'] = $this->token($request);
         if ($app['token'] == null) {
             $app->abort(401, "Unauthorized");
@@ -173,4 +178,18 @@ class OAuth2
         return $response;
     }
 
+    /**
+     * Uses the information in the session to call the revoke oauth api.
+     */
+    public function revokeToken()
+    {
+        $token_info = $this->app['session']->get("token_info");
+        if (!is_array($token_info)) return;
+        if (array_key_exists("refresh_token", $token_info)) {
+            $this->client->post('/oauth2/revokeToken', $token_info["refresh_token"]);
+        }
+        if (array_key_exists("access_token", $token_info)) {
+            $this->client->post('/oauth2/revokeToken', $token_info["access_token"]);
+        }
+    }
 }
