@@ -186,10 +186,14 @@ class OAuth2
         $token_info = $this->app['session']->get("token_info");
         if (!is_array($token_info)) return;
         if (array_key_exists("refresh_token", $token_info)) {
-            $this->client->post('/oauth2/revokeToken', $token_info["refresh_token"]);
+            $params['token_type_hint'] = 'refresh_token';
+            $params['token'] = $token_info["refresh_token"];
+            $this->client->post('/oauth2/revokeToken', $params);
         }
         if (array_key_exists("access_token", $token_info)) {
-            $this->client->post('/oauth2/revokeToken', $token_info["access_token"]);
+            $params['token_type_hint'] = 'access_token';
+            $params['token'] = $token_info["access_token"];
+            $this->client->post('/oauth2/revokeToken', $params);
         }
     }
 }
